@@ -1,12 +1,13 @@
-import React, { useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
+import { v4 as uuidv4 } from 'uuid';
 import breakpoints from '../../styles/base/breakpoints';
+import { baseColors } from '../../styles/base/colors';
 import { styleSettings } from '../../styles/base/variables';
+import Spinner from '../Spinner/Spinner';
 import Topbar from '../Topbar/Topbar';
-import { fetchData } from '../../api/index.js';
-import { store } from '../../state/store';
-// import { theme } from '../../styles/base/colors';
 
 const DocumentViewWrapper = styled.div``;
 
@@ -14,69 +15,104 @@ const DocumentViewContainer = styled.div`
   padding: 20px;
   margin: 0 auto;
   max-width: ${styleSettings.maxWidth}px;
-  /* @media (min-width: ${breakpoints.xSmallMax}px) {
-    color: green;
-  } */
+`;
+
+const ArtboardsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
+
+const ArtboardItem = styled.div`
+  height: 340px;
+  max-height: 340px;
+  margin-bottom: 30px;
+  width: 100%;
+
+  a {
+    display: flex;
+    height: 100%;
+    max-height: 100%;
+    flex-direction: column;
+    text-decoration: none;
+  }
+
+  @media (min-width: ${breakpoints.small}px) {
+    width: 48%;
+  }
+
+  @media (min-width: ${breakpoints.medium}px) {
+    width: 31%;
+  }
+
+  @media (min-width: ${breakpoints.large}px) {
+    width: 240px;
+  }
+`;
+
+const ArtboardTitle = styled.div`
+  color: ${baseColors.scorpion};
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: 22px;
+  margin-top: 10px;
+  text-align: center;
+`;
+
+const ArtboardThumbnail = styled.div`
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: 308px;
+  display: flex;
+  align-items: center;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+`;
+
+const SpinnerContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 90vh;
+  justify-content: center;
+  align-items: center;
 `;
 
 const DocumentView = props => {
-  const { documentId } = props;
-
-  const globalState = useContext(store);
-  const { state, dispatch } = globalState;
-
-  console.log(state?.data?.currentDocument);
-  const { isFetching } = state;
-  const { currentDocument } = state?.data;
-
-  useEffect(() => {
-    // Get current document detail
-    dispatch({ type: 'IS_FETCHING_SET' });
-    fetchData({
-      query: `
-        {
-          share(shortId: "${documentId}") {
-            shortId
-            version {
-              document {
-                name
-                artboards {
-                  entries {
-                    name
-                    isArtboard
-                    files {
-                      url
-                      height
-                      width
-                      scale
-                      thumbnails {
-                        url
-                        height
-                        width
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
-    }).then(res => {
-      dispatch({ type: 'IS_FETCHING_UNSET' });
-      dispatch({ type: 'DOCUMENT_DETAIL_REQUEST', payload: res.data });
-    });
-  }, []);
+  const { document, isFetching } = props;
 
   return (
     <DocumentViewWrapper>
-      <Topbar caption={currentDocument?.name} />
-      {!isFetching && currentDocument ? (
+      <Topbar isFetching={isFetching} caption={document?.name} />
+      {!isFetching && document ? (
         <DocumentViewContainer>
-          DOCUMENT VIEW: {documentId}
+          {document.artboards.entries.length && (
+            <ArtboardsContainer>
+              {document.artboards.entries.map((artboard, index) => (
+                <ArtboardItem key={uuidv4()}>
+                  <Link to={`/artboard/${index}`}>
+                    <ArtboardThumbnail>
+                      <img
+                        src={artboard.files[0].thumbnails[0].url}
+                        alt={`${artboard.name} thumbnail`}
+                      />
+                    </ArtboardThumbnail>
+                    <ArtboardTitle>{artboard.name}</ArtboardTitle>
+                  </Link>
+                </ArtboardItem>
+              ))}
+            </ArtboardsContainer>
+          )}
         </DocumentViewContainer>
       ) : (
-        <p>loading</p>
+        <DocumentViewContainer>
+          <SpinnerContainer>
+            <Spinner />
+          </SpinnerContainer>
+        </DocumentViewContainer>
       )}
     </DocumentViewWrapper>
   );

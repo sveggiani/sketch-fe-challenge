@@ -13,12 +13,14 @@ const baseColors = {
   black: '#000000',
   black15p: 'rgba(0, 0, 0, 0.15)',
   codGray: '#111111',
+  yellowSea: '#FDAD00',
+  scorpion: '#5B5B5B',
   white: '#FFFFFF',
 };
 
 const theme = {
   background: baseColors.alabaster,
-  primary: null,
+  primary: baseColors.yellowSea,
   shadow: baseColors.black15p,
   text: baseColors.codGray,
 };

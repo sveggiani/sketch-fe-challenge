@@ -3,10 +3,11 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { baseColors, theme } from '../../styles/base/colors';
 import { styleSettings } from '../../styles/base/variables';
+import Spinner from '../Spinner/Spinner';
 
 const TopbarWrapper = styled.nav`
   background-color: ${baseColors.white};
-  box-shadow: 0 3px 3px 0 ${theme.shadow};
+  box-shadow: 0 1px 5px 0 ${theme.shadow};
   height: 55px;
   padding: 15px;
 `;
@@ -36,24 +37,28 @@ const TopbarCaption = styled.div`
 `;
 
 const Topbar = props => {
-  const { caption, mode } = props;
+  const { caption, isFetching, mode } = props;
 
   return (
     <TopbarWrapper>
       <TopbarContainer>
-        {mode === 'normal' && (
-          <>
-            <TopbarBrand>
-              <img
-                src="./assets/sketch-logo.svg"
-                alt="Sketch Document Viewer"
-              />
-            </TopbarBrand>
-            <TopbarSeparator>
-              <img src="./assets/icons/separator.svg" alt="Separator" />
-            </TopbarSeparator>
-            <TopbarCaption>{caption}</TopbarCaption>
-          </>
+        {isFetching ? (
+          <Spinner />
+        ) : (
+          mode === 'normal' && (
+            <>
+              <TopbarBrand>
+                <img
+                  src="./assets/sketch-logo.svg"
+                  alt="Sketch Document Viewer"
+                />
+              </TopbarBrand>
+              <TopbarSeparator>
+                <img src="./assets/icons/separator.svg" alt="Separator" />
+              </TopbarSeparator>
+              <TopbarCaption>{caption}</TopbarCaption>
+            </>
+          )
         )}
       </TopbarContainer>
     </TopbarWrapper>
@@ -62,6 +67,7 @@ const Topbar = props => {
 
 Topbar.propTypes = {
   caption: PropTypes.string,
+  isFetching: PropTypes.bool,
   mode: PropTypes.oneOf(['normal', 'navigation']),
 };
 
