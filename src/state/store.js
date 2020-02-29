@@ -21,11 +21,18 @@ const reducer = (state, action) => {
       };
 
     case 'DOCUMENT_DETAIL_REQUEST':
+      if (!payload.data.share) {
+        return state;
+      }
+
       return {
         ...state,
         data: {
           ...state.data,
-          currentDocument: payload.share.version.document,
+          currentDocument: {
+            documentId: payload.documentId,
+            ...payload.data.share.version.document,
+          },
         },
       };
 

@@ -82,7 +82,7 @@ const SpinnerContainer = styled.div`
 `;
 
 const DocumentView = props => {
-  const { document, isFetching } = props;
+  const { document, documentId, isFetching } = props;
 
   return (
     <DocumentViewWrapper>
@@ -93,11 +93,12 @@ const DocumentView = props => {
             <ArtboardsContainer>
               {document.artboards.entries.map((artboard, index) => (
                 <ArtboardItem key={uuidv4()}>
-                  <Link to={`/artboard/${index}`}>
+                  <Link to={`${documentId}/artboard/${index}`}>
                     <ArtboardThumbnail>
                       <img
                         src={artboard.files[0].thumbnails[0].url}
                         alt={`${artboard.name} thumbnail`}
+                        loading="lazy"
                       />
                     </ArtboardThumbnail>
                     <ArtboardTitle>{artboard.name}</ArtboardTitle>
@@ -119,11 +120,9 @@ const DocumentView = props => {
 };
 
 DocumentView.propTypes = {
+  document: PropTypes.object,
   documentId: PropTypes.string,
-};
-
-DocumentView.defaultProps = {
-  documentId: 'Y8wDM',
+  isFetching: PropTypes.bool,
 };
 
 export default DocumentView;

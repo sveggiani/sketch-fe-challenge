@@ -15,6 +15,7 @@ const baseColors = {
   codGray: '#111111',
   yellowSea: '#FDAD00',
   scorpion: '#5B5B5B',
+  stack: '#9D9E9D',
   white: '#FFFFFF',
 };
 
@@ -23,6 +24,7 @@ const theme = {
   primary: baseColors.yellowSea,
   shadow: baseColors.black15p,
   text: baseColors.codGray,
+  textLight: baseColors.stack,
 };
 
 export { baseColors, theme };

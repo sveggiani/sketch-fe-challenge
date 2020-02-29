@@ -48,14 +48,18 @@ const DocumentViewContainer = props => {
       `,
     }).then(res => {
       dispatch({ type: 'IS_FETCHING_UNSET' });
-      dispatch({ type: 'DOCUMENT_DETAIL_REQUEST', payload: res.data });
+      dispatch({
+        type: 'DOCUMENT_DETAIL_REQUEST',
+        payload: { data: res.data, documentId: documentId },
+      });
     });
   }, [documentId, dispatch]);
-  console.log('render DVC');
+
   return (
     <DocumentView
       isFetching={isFetching}
       document={currentDocument}
+      documentId={documentId}
     ></DocumentView>
   );
 };

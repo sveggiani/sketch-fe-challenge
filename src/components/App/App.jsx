@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components/macro';
+import ArtboardViewContainer from '../../containers/ArtboardViewContainer.jsx';
 import DocumentViewContainer from '../../containers/DocumentViewContainer.jsx';
 import { theme } from '../../styles/base/colors';
-import ArtboardView from '../ArtboardView/ArtboardView';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -34,7 +34,10 @@ const App = () => {
         <AppBody>
           <div className="app__content">
             <Route exact path="/" component={DocumentViewContainer} />
-            <Route path="/artboard/:id" component={ArtboardView} />
+            <Route
+              path="/:documentId/artboard/:artboardId"
+              component={ArtboardViewContainer}
+            />
           </div>
         </AppBody>
       </Router>
